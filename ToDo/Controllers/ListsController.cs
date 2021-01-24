@@ -10,6 +10,7 @@ using ToDo.Models;
 
 namespace ToDo.Controllers
 {
+    [Route("Lists/[action]")]
     public class ListsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,6 +21,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
             List<Models.List> data = await _context.List
@@ -29,7 +31,8 @@ namespace ToDo.Controllers
             return View(data);
         }
 
-        // GET: Lists/Details/5
+        // GET: Lists/5
+        [HttpGet("{listId:int}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -50,6 +53,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -71,7 +75,8 @@ namespace ToDo.Controllers
             return View(list);
         }
 
-        // GET: Lists/Edit/5
+        // GET: Lists/5/Edit
+        [HttpGet("{listId:int}/Edit")]
         public async Task<IActionResult> Edit(int? listId)
         {
             if (listId == null)
@@ -87,10 +92,10 @@ namespace ToDo.Controllers
             return View(list);
         }
 
-        // POST: Lists/Edit/5
+        // POST: Lists/5/Edit
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("{listId:int}/Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int listId, [Bind("Id,Name")] List list)
         {
@@ -122,7 +127,8 @@ namespace ToDo.Controllers
             return View(list);
         }
 
-        // GET: Lists/Delete/5
+        // GET: Lists/5/Delete
+        [HttpGet("{listId:int}/Delete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,8 +146,8 @@ namespace ToDo.Controllers
             return View(list);
         }
 
-        // POST: Lists/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Lists/5/Delete
+        [HttpPost("{listId:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

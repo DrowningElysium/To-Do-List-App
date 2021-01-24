@@ -46,42 +46,8 @@ namespace ToDo
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "Home",
-                    pattern: "/",
-                    defaults: new { controller = "Lists", action = "Index" });
-                endpoints.MapControllerRoute(
-                    name: "ListIndex",
-                    pattern: "Lists",
-                    defaults: new { controller = "Lists", action = "Index" });
-                endpoints.MapControllerRoute(
-                    name: "ListCreate",
-                    pattern: "Lists/Create",
-                    defaults: new { controller = "Lists", action = "Create" });
-                endpoints.MapControllerRoute(
-                    name: "ListDetail",
-                    pattern: "Lists/{listId:int}",
-                    defaults: new { controller = "Lists", action = "Details" });
-                endpoints.MapControllerRoute(
-                    name: "ListEdit",
-                    pattern: "Lists/{listId:int}/Edit",
-                    defaults: new { controller = "Lists", action = "Edit" });
-
-                endpoints.MapControllerRoute(
-                    name: "ListItemCreate",
-                    pattern: "Lists/{listId:int}/Items/Create",
-                    defaults: new { controller = "ListItems", action = "Create" });
-                endpoints.MapControllerRoute(
-                    name: "ListItemComplete",
-                    pattern: "Lists/{listId:int}/Items/{itemId:int}/Complete",
-                    defaults: new { controller = "ListItems", action = "Complete" });
-                endpoints.MapControllerRoute(
-                    name: "ListItemEdit",
-                    pattern: "Lists/{listId:int}/Items/{itemId:int}/Edit",
-                    defaults: new { controller = "ListItems", action = "Edit" });
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Lists");
             });
         }
     }

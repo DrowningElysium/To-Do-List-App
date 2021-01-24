@@ -44,7 +44,7 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/Create
-        [HttpGet()]
+        [HttpGet]
         public string Create(int listId)
         {
             return "works";
