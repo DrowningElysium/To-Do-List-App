@@ -20,15 +20,7 @@ namespace ToDo.Controllers
             _context = context;
         }
 
-        // GET: ListItems
-        [HttpGet()]
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Item.Include(i => i.List);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: ListItems/Create
+        // GET: Lists/1/Create
         [HttpGet("Create")]
         public async Task<IActionResult> Create(int listId)
         {
@@ -37,7 +29,7 @@ namespace ToDo.Controllers
             return View();
         }
 
-        // POST: ListItems/Create
+        // POST: Lists/1/Create
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int listId, [Bind("ListId,Name")] Item item)
@@ -56,7 +48,7 @@ namespace ToDo.Controllers
             return Redirect($"/Lists/{listId}");
         }
 
-        // GET: ListItems/5/Edit
+        // GET: Lists/1/Items/5/Edit
         [HttpGet("{id:int}/Edit")]
         public async Task<IActionResult> Edit(int listId, int id)
         {
@@ -72,7 +64,7 @@ namespace ToDo.Controllers
             return View(item);
         }
 
-        // POST: ListItems/5/Edit
+        // POST: Lists/1/Items/5/Edit
         [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int listId, int id, [Bind("Id,ListId,Name")] Item item)
@@ -122,7 +114,7 @@ namespace ToDo.Controllers
             return RedirectToAction("Details", "ListsController", new { id = listId });
         }
 
-        // POST: ListItems/5/Delete
+        // POST: Lists/1/Items/5/Delete
         [HttpPost("{id:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int listId, int id)
