@@ -56,11 +56,12 @@ namespace ToDo.Controllers
                 .Include(i => i.List)
                 .Where(i => i.Id == id)
                 .FirstAsync();
+
             if (item == null || item.ListId != listId)
             {
                 return NotFound();
             }
-            ViewData["ListId"] = new SelectList(_context.List, "Id", "Name", item.ListId);
+
             return View(item);
         }
 
