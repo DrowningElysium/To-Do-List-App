@@ -10,6 +10,7 @@ using ToDo.Models;
 
 namespace ToDo.Controllers
 {
+    [Route("Lists/{listId:int}/Items/[action]")]
     public class ListItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,20 +21,17 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Item.Include(i => i.list);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: ListItems/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: ListItems/5
+        [HttpGet("{itemId:int}")]
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var item = await _context.Item
                 .Include(i => i.list)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -46,9 +44,10 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/Create
-        public string Create()
+        [HttpGet()]
+        public string Create(int listId)
         {
-            return "Doet het";
+            return "works";
             //ViewData["ListId"] = new SelectList(_context.List, "Id", "Name");
             //return View();
         }
@@ -70,8 +69,9 @@ namespace ToDo.Controllers
             return View(item);
         }
 
-        // GET: ListItems/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: ListItems/5/Edit
+        [HttpGet("{itemId:int}/Edit")]
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
@@ -88,9 +88,7 @@ namespace ToDo.Controllers
         }
 
         // POST: ListItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("{itemId:int}/Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ListId,Name,CompletionDate")] Item item)
         {
@@ -123,7 +121,20 @@ namespace ToDo.Controllers
             return View(item);
         }
 
-        // GET: ListItems/Delete/5
+        // GET: Lists/1/Items/5/Complete
+        [HttpGet("{itemId:int}/Complete")]
+        public async Task<IActionResult> Complete(int listId, int itemId)
+        {
+            var item = await _context.Item.FindAsync(itemId);
+            if (item == null || item.ListId != listId)
+            {
+                return NotFound();
+            }
+            return RedirectToAction("Details", "ListsController", new { listId = listId });
+        }
+
+        // GET: ListItems/5/Delete
+        [HttpGet("{itemId:int}/Delete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -142,8 +153,8 @@ namespace ToDo.Controllers
             return View(item);
         }
 
-        // POST: ListItems/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: ListItems/5/Delete
+        [HttpPost("{itemId:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

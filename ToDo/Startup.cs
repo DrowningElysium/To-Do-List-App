@@ -72,6 +72,10 @@ namespace ToDo
                     pattern: "Lists/{listId:int}/Items/Create",
                     defaults: new { controller = "ListItems", action = "Create" });
                 endpoints.MapControllerRoute(
+                    name: "ListItemComplete",
+                    pattern: "Lists/{listId:int}/Items/{itemId:int}/Complete",
+                    defaults: new { controller = "ListItems", action = "Complete" });
+                endpoints.MapControllerRoute(
                     name: "ListItemEdit",
                     pattern: "Lists/{listId:int}/Items/{itemId:int}/Edit",
                     defaults: new { controller = "ListItems", action = "Edit" });

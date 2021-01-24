@@ -21,13 +21,13 @@
                 <div class="float-left">@Html.DisplayFor(Model => item.Name)</div>
                 <div class="float-right">
                     <div class="btn-group" role="group">
-                        <a asp-controller="ToDo" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                        <a asp-controller="ListItems" asp-action="Complete" asp-route-listId="@Model.Id" asp-route-itemId="@item.Id" class="btn btn-sm btn-success">
                             <i class="fas fa-check"></i>
                         </a>
-                        <a asp-controller="ToDo" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                        <a asp-controller="ListItems" asp-action="Edit" asp-route-listId="@Model.Id" asp-route-itemId="@item.Id" class="btn btn-sm btn-primary">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a asp-controller="ToDo" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                        <a asp-controller="ListItems" asp-action="Delete" asp-route-listId="@Model.Id" asp-route-itemId="@item.Id" class="btn btn-sm btn-danger">
                             <i class="fas fa-trash"></i>
                         </a>
                     </div>
