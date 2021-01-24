@@ -121,5 +121,10 @@ namespace ToDo.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        private bool ListExists(int id)
+        {
+            return _context.List.Any(e => e.Id == id);
+        }
     }
 }
