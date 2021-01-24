@@ -56,7 +56,7 @@ namespace ToDo.Controllers
                 .Include(i => i.List)
                 .Where(i => i.Id == id)
                 .FirstAsync();
-            if (item == null)
+            if (item == null || item.ListId != listId)
             {
                 return NotFound();
             }
