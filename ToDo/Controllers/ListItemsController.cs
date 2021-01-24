@@ -38,8 +38,6 @@ namespace ToDo.Controllers
         }
 
         // POST: ListItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int listId, [Bind("ListId,Name")] Item item)
@@ -62,11 +60,6 @@ namespace ToDo.Controllers
         [HttpGet("{id:int}/Edit")]
         public async Task<IActionResult> Edit(int listId, int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var item = await _context.Item
                 .Include(i => i.List)
                 .Where(i => i.Id == id)
