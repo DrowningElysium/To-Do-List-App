@@ -10,7 +10,7 @@ using ToDo.Models;
 
 namespace ToDo.Controllers
 {
-    [Route("Lists/{listId:int}/Items/[action]")]
+    [Route("[controller]/{listId:int}/Items")]
     public class ListItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,7 +44,7 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/Create
-        [HttpGet]
+        [HttpGet("Create")]
         public string Create(int listId)
         {
             return "works";
@@ -55,7 +55,7 @@ namespace ToDo.Controllers
         // POST: ListItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int listId, [Bind("Id,ListId,Name,CompletionDate")] Item item)
         {
@@ -122,19 +122,20 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/1/Items/5/Complete
-        [HttpGet("{id:int}/Complete")]
-        public async Task<IActionResult> Complete(int listId, int id)
+        [HttpGet("/{id:int}/Complete")]
+        public async Task<string> Complete(int listId, int id)
         {
-            var item = await _context.Item.FindAsync(id);
-            if (item == null || item.ListId != listId)
-            {
-                return NotFound();
-            }
-            return RedirectToAction("Details", "ListsController", new { listId = listId });
+            return "test";
+            //var item = await _context.Item.FindAsync(itemId);
+            //if (item == null || item.ListId != listId)
+            //{
+            //    return NotFound();
+            //}
+            //return RedirectToAction("Details", "ListsController", new { listId = listId });
         }
 
         // GET: ListItems/5/Delete
-        [HttpGet("{id:int}/Delete")]
+        [HttpGet("/{id:int}/Delete")]
         public async Task<string> Delete(int listId, int id)
         {
             return listId + ", " + id;

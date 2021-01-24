@@ -10,7 +10,7 @@ using ToDo.Models;
 
 namespace ToDo.Controllers
 {
-    [Route("Lists/[action]")]
+    [Route("Lists")]
     public class ListsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -53,7 +53,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/Create
-        [HttpGet]
+        [HttpGet("Create")]
         public IActionResult Create()
         {
             return View();
@@ -62,7 +62,7 @@ namespace ToDo.Controllers
         // POST: Lists/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] List list)
         {
