@@ -33,13 +33,8 @@ namespace ToDo.Controllers
 
         // GET: Lists/5
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var list = await _context.List
                 .Include(l => l.Items)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -66,24 +61,22 @@ namespace ToDo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name")] List list)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(list);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // As the model is not valid we want to show the form again with the current values.
+                // The problem is that we can't do this with a redirect, which I normally use in Laravel.
+                return Create();
             }
-            return RedirectToAction(nameof(Create));
+
+            _context.Add(list);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Lists/5/Edit
         [HttpGet("{id:int}/Edit")]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var list = await _context.List.FindAsync(id);
             if (list == null)
             {
@@ -93,8 +86,6 @@ namespace ToDo.Controllers
         }
 
         // POST: Lists/5/Edit
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] List list)
@@ -104,62 +95,31 @@ namespace ToDo.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
+                // As the model is not valid we want to show the form again with the current values.
+                // The problem is that we can't do this with a redirect, which I normally use in Laravel.
+                return await Edit(id);
+            }
+
+            try
+            {
+                _context.Update(list);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ListExists(list.Id))
                 {
-                    _context.Update(list);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ListExists(list.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(list);
-        }
-
-        // GET: Lists/5/Delete
-        [HttpGet("{id:int}/Delete")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
             }
 
-            var list = await _context.List
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (list == null)
-            {
-                return NotFound();
-            }
-
-            return View(list);
-        }
-
-        // POST: Lists/5/Delete
-        [HttpPost("{id:int}/Delete"), ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var list = await _context.List.FindAsync(id);
-            _context.List.Remove(list);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ListExists(int id)
-        {
-            return _context.List.Any(e => e.Id == id);
         }
     }
 }

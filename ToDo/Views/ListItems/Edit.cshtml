@@ -4,40 +4,15 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<form asp-controller="Lists" asp-action="Edit" method="post">
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Edit To-Do Item @Html.DisplayFor(model => model.Name) in List @Html.DisplayFor(model => model.List.Name)</h2>
+        </div>
 
-<h4>Item</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ListId" class="control-label"></label>
-                <select asp-for="ListId" class="form-control" asp-items="ViewBag.ListId"></select>
-                <span asp-validation-for="ListId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompletionDate" class="control-label"></label>
-                <input asp-for="CompletionDate" class="form-control" />
-                <span asp-validation-for="CompletionDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        <partial name="_Form.cshtml" model="Model" />
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

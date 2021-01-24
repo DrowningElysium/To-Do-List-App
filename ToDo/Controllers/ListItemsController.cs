@@ -10,7 +10,7 @@ using ToDo.Models;
 
 namespace ToDo.Controllers
 {
-    [Route("[controller]/{listId:int}/Items")]
+    [Route("Lists/{listId:int}/Items")]
     public class ListItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,32 +24,17 @@ namespace ToDo.Controllers
         [HttpGet()]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Item.Include(i => i.list);
+            var applicationDbContext = _context.Item.Include(i => i.List);
             return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: ListItems/5
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Details(int listId, int id)
-        {
-            var item = await _context.Item
-                .Include(i => i.list)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
         }
 
         // GET: ListItems/Create
         [HttpGet("Create")]
-        public string Create(int listId)
+        public async Task<IActionResult> Create(int listId)
         {
-            return "works";
-            //ViewData["ListId"] = new SelectList(_context.List, "Id", "Name");
-            //return View();
+            ViewData["List"] = await _context.List
+                .FindAsync(listId);
+            return View();
         }
 
         // POST: ListItems/Create
@@ -57,16 +42,20 @@ namespace ToDo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int listId, [Bind("Id,ListId,Name,CompletionDate")] Item item)
+        public async Task<IActionResult> Create(int listId, [Bind("ListId,Name")] Item item)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // As the model is not valid we want to show the form again with the current values.
+                // The problem is that we can't do this with a redirect, which I normally use in Laravel.
+                return await Create(listId);
             }
-            ViewData["ListId"] = new SelectList(_context.List, "Id", "Name", item.ListId);
-            return View(item);
+
+            _context.Add(item);
+            await _context.SaveChangesAsync();
+
+            // Hardcoded redirect as RedirectToAction doesn't seem to understand my URL scheme
+            return Redirect($"/Lists/{listId}");
         }
 
         // GET: ListItems/5/Edit
@@ -78,7 +67,10 @@ namespace ToDo.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
+            var item = await _context.Item
+                .Include(i => i.List)
+                .Where(i => i.Id == id)
+                .FirstAsync();
             if (item == null)
             {
                 return NotFound();
@@ -90,69 +82,51 @@ namespace ToDo.Controllers
         // POST: ListItems/5/Edit
         [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int listId, int id, [Bind("Id,ListId,Name,CompletionDate")] Item item)
+        public async Task<IActionResult> Edit(int listId, int id, [Bind("Id,ListId,Name")] Item item)
         {
-            if (id != item.Id)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                // As the model is not valid we want to show the form again with the current values.
+                // The problem is that we can't do this with a redirect, which I normally use in Laravel.
+                return await Edit(listId, id);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(item);
+                await _context.SaveChangesAsync();
             }
-            ViewData["ListId"] = new SelectList(_context.List, "Id", "Name", item.ListId);
-            return View(item);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ItemExists(item.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            // Hardcoded redirect as RedirectToAction doesn't seem to understand my URL scheme
+            return Redirect($"/Lists/{listId}");
         }
 
         // GET: Lists/1/Items/5/Complete
         [HttpGet("/{id:int}/Complete")]
-        public async Task<string> Complete(int listId, int id)
+        public async Task<IActionResult> Complete(int listId, int id)
         {
-            return "test";
-            //var item = await _context.Item.FindAsync(itemId);
-            //if (item == null || item.ListId != listId)
-            //{
-            //    return NotFound();
-            //}
-            //return RedirectToAction("Details", "ListsController", new { listId = listId });
-        }
+            var item = await _context.Item.FindAsync(id);
+            if (item == null || item.ListId != listId)
+            {
+                return NotFound();
+            }
 
-        // GET: ListItems/5/Delete
-        [HttpGet("/{id:int}/Delete")]
-        public async Task<string> Delete(int listId, int id)
-        {
-            return listId + ", " + id;
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            item.CompletionDate = DateTime.UtcNow;
+            _context.Update(item);
+            await _context.SaveChangesAsync();
 
-            //var item = await _context.Item
-            //    .Include(i => i.list)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (item == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(item);
+            return RedirectToAction("Details", "ListsController", new { id = listId });
         }
 
         // POST: ListItems/5/Delete
@@ -160,10 +134,33 @@ namespace ToDo.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int listId, int id)
         {
-            var item = await _context.Item.FindAsync(id);
+            Item item = await _context.Item
+                .FindAsync(id);
+
+            if (item == null || item.ListId != listId)
+            {
+                return NotFound();
+            }
+
+            List list = await _context.List
+                .Include(l => l.Items)
+                .Where(l => l.Id == listId)
+                .FirstAsync();
+
             _context.Item.Remove(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            // If last item of list, delete list.
+            if (list.Items.Count < 1) { 
+            
+                _context.List.Remove(list);
+            }
+
+            // Commit DB changes.
+            await _context.SaveChangesAsync();
+
+            // Hardcoded redirect as RedirectToAction doesn't seem to understand my URL scheme
+            return Redirect($"/Lists/{listId}");
         }
 
         private bool ItemExists(int id)

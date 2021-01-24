@@ -14,7 +14,7 @@ namespace ToDo.Models
 
         [Required]
         public int ListId { get; set; }
-        public virtual List list { get; set; }
+        public virtual List List { get; set; }
 
         [Required]
         public string Name { get; set; }

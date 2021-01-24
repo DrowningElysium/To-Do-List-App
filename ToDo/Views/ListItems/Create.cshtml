@@ -2,40 +2,18 @@
 
 @{
     ViewData["Title"] = "Create";
+    List list = (List) ViewData["List"];
 }
 
-<h1>Create</h1>
+<form asp-controller="ListItems" asp-action="Create" asp-route-listId="@list.Id" method="post">
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Add To-Do Item in List @Html.DisplayFor(model => list.Name)</h2>
+        </div>
 
-<h4>Item</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ListId" class="control-label"></label>
-                <select asp-for="ListId" class ="form-control" asp-items="ViewBag.ListId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CompletionDate" class="control-label"></label>
-                <input asp-for="CompletionDate" class="form-control" />
-                <span asp-validation-for="CompletionDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        <partial name="_Form.cshtml" model="Model" />
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

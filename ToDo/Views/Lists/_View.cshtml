@@ -6,30 +6,37 @@
             <a asp-controller="Lists" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
                 <i class="fas fa-edit"></i>
             </a>
-            <a asp-controller="Lists" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-link text">
+            <a asp-controller="Lists" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-link text-truncate">
                 @Html.DisplayFor(model => model.Name)
             </a>
         </div>
         <div class="float-right">
-            <a asp-controller="ListItems" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Add Item</a>
+            <a asp-controller="ListItems" asp-action="Create" asp-route-listId="@Model.Id" class="btn btn-sm btn-primary">Add Item</a>
         </div>
     </div>
     <ul class="list-group list-group-flush">
         @foreach(Item item in Model.Items)
         {
             <li class="list-group-item">
-                <div class="float-left">@Html.DisplayFor(Model => item.Name)</div>
-                <div class="float-right">
-                    <div class="btn-group" role="group">
-                        <a asp-controller="ListItems" asp-action="Complete" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="btn btn-sm btn-success">
-                            <i class="fas fa-check"></i>
-                        </a>
-                        <a asp-controller="ListItems" asp-action="Edit" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a asp-controller="ListItems" asp-action="Delete" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                <div class="row">
+                    <div class="col-9 col-md-10 text-truncate">@Html.DisplayFor(Model => item.Name)</div>
+                    <div class="col-3 col-md-2">
+                        <div class="btn-group float-right" role="group">
+                            <!-- TODO: Bug: Generates the wrong url for some reason. -->
+                            <a asp-controller="ListItems" asp-action="Complete" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a asp-controller="ListItems" asp-action="Edit" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form asp-controller="ListItems" asp-action="Delete" asp-route-listId="@Model.Id" asp-route-id="@item.Id" class="d-inline">
+                                <!-- style-tag is a bootstrap fix -->
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        style="border-bottom-left-radius: 0; border-top-left-radius: 0;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </li>
