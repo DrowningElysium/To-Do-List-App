@@ -123,9 +123,9 @@ namespace ToDo.Controllers
 
         // GET: Lists/1/Items/5/Complete
         [HttpGet("{itemId:int}/Complete")]
-        public async Task<IActionResult> Complete(int listId, int itemId)
+        public async Task<IActionResult> Complete(int listId, int id)
         {
-            var item = await _context.Item.FindAsync(itemId);
+            var item = await _context.Item.FindAsync(id);
             if (item == null || item.ListId != listId)
             {
                 return NotFound();
@@ -135,28 +135,29 @@ namespace ToDo.Controllers
 
         // GET: ListItems/5/Delete
         [HttpGet("{itemId:int}/Delete")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<string> Delete(int listId, int itemId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            return listId + ", " + itemId;
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var item = await _context.Item
-                .Include(i => i.list)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
+            //var item = await _context.Item
+            //    .Include(i => i.list)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            //if (item == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return View(item);
+            //return View(item);
         }
 
         // POST: ListItems/5/Delete
         [HttpPost("{itemId:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int listId, int id)
         {
             var item = await _context.Item.FindAsync(id);
             _context.Item.Remove(item);
