@@ -29,8 +29,8 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/5
-        [HttpGet("{itemId:int}")]
-        public async Task<IActionResult> Details(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Details(int listId, int id)
         {
             var item = await _context.Item
                 .Include(i => i.list)
@@ -57,7 +57,7 @@ namespace ToDo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ListId,Name,CompletionDate")] Item item)
+        public async Task<IActionResult> Create(int listId, [Bind("Id,ListId,Name,CompletionDate")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -70,8 +70,8 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/5/Edit
-        [HttpGet("{itemId:int}/Edit")]
-        public async Task<IActionResult> Edit(int id)
+        [HttpGet("{id:int}/Edit")]
+        public async Task<IActionResult> Edit(int listId, int id)
         {
             if (id == null)
             {
@@ -87,10 +87,10 @@ namespace ToDo.Controllers
             return View(item);
         }
 
-        // POST: ListItems/Edit/5
-        [HttpPost("{itemId:int}/Edit")]
+        // POST: ListItems/5/Edit
+        [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ListId,Name,CompletionDate")] Item item)
+        public async Task<IActionResult> Edit(int listId, int id, [Bind("Id,ListId,Name,CompletionDate")] Item item)
         {
             if (id != item.Id)
             {
@@ -122,7 +122,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/1/Items/5/Complete
-        [HttpGet("{itemId:int}/Complete")]
+        [HttpGet("{id:int}/Complete")]
         public async Task<IActionResult> Complete(int listId, int id)
         {
             var item = await _context.Item.FindAsync(id);
@@ -134,10 +134,10 @@ namespace ToDo.Controllers
         }
 
         // GET: ListItems/5/Delete
-        [HttpGet("{itemId:int}/Delete")]
-        public async Task<string> Delete(int listId, int itemId)
+        [HttpGet("{id:int}/Delete")]
+        public async Task<string> Delete(int listId, int id)
         {
-            return listId + ", " + itemId;
+            return listId + ", " + id;
             //if (id == null)
             //{
             //    return NotFound();
@@ -155,7 +155,7 @@ namespace ToDo.Controllers
         }
 
         // POST: ListItems/5/Delete
-        [HttpPost("{itemId:int}/Delete"), ActionName("Delete")]
+        [HttpPost("{id:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int listId, int id)
         {

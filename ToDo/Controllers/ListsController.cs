@@ -32,7 +32,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/5
-        [HttpGet("{listId:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -76,15 +76,15 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/5/Edit
-        [HttpGet("{listId:int}/Edit")]
-        public async Task<IActionResult> Edit(int? listId)
+        [HttpGet("{id:int}/Edit")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (listId == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var list = await _context.List.FindAsync(listId);
+            var list = await _context.List.FindAsync(id);
             if (list == null)
             {
                 return NotFound();
@@ -95,11 +95,11 @@ namespace ToDo.Controllers
         // POST: Lists/5/Edit
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost("{listId:int}/Edit")]
+        [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int listId, [Bind("Id,Name")] List list)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] List list)
         {
-            if (listId != list.Id)
+            if (id != list.Id)
             {
                 return NotFound();
             }
@@ -128,7 +128,7 @@ namespace ToDo.Controllers
         }
 
         // GET: Lists/5/Delete
-        [HttpGet("{listId:int}/Delete")]
+        [HttpGet("{id:int}/Delete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +147,7 @@ namespace ToDo.Controllers
         }
 
         // POST: Lists/5/Delete
-        [HttpPost("{listId:int}/Delete"), ActionName("Delete")]
+        [HttpPost("{id:int}/Delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
