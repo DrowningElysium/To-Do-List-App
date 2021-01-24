@@ -1,0 +1,38 @@
+﻿@model ToDo.Models.List
+
+<div class="card">
+    <div class="card-header">
+        <div class="float-left">
+            <a asp-controller="Lists" asp-action="Edit" asp-route-listId="@Model.Id" class="btn btn-sm btn-primary">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a asp-controller="Lists" asp-action="Details" asp-route-listId="@Model.Id" class="btn btn-sm btn-link text">
+                @Html.DisplayFor(model => model.Name)
+            </a>
+        </div>
+        <div class="float-right">
+            <a asp-controller="ListItems" asp-action="Create" asp-route-listId="@Model.Id" class="btn btn-sm btn-primary">Add Item</a>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+        @foreach(Item item in Model.Items)
+        {
+            <li class="list-group-item">
+                <div class="float-left">@Html.DisplayFor(Model => item.Name)</div>
+                <div class="float-right">
+                    <div class="btn-group" role="group">
+                        <a asp-controller="ToDo" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i>
+                        </a>
+                        <a asp-controller="ToDo" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-controller="ToDo" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

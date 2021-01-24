@@ -1,0 +1,21 @@
+﻿@model ToDo.Models.List
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-12">
+            <h2 class="text-primary">
+                To-Do List: @Html.DisplayFor(model => model.Name)
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <partial name="_View.cshtml" model="Model" />
+        </div>
+    </div>
+</div>

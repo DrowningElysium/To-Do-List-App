@@ -1,0 +1,19 @@
+﻿@model ToDo.Models.List
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form asp-controller="ToDo" asp-action="Create" method="post">
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Add To-Do Item</h2>
+        </div>
+
+        <partial name="_Form.cshtml" model="Model" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
