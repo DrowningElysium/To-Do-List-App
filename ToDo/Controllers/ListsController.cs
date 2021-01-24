@@ -64,7 +64,7 @@ namespace ToDo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] List list)
+        public async Task<IActionResult> Create([Bind("Name")] List list)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace ToDo.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(list);
+            return RedirectToAction(nameof(Create));
         }
 
         // GET: Lists/5/Edit
